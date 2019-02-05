@@ -67,9 +67,7 @@ module Firebase
       end
 
       Firebase::Response.new @request.request(verb, path, {
-        :body             => data,
-        :query            => (@secret ? { :auth => @secret }.merge(query) : query),
-        :follow_redirect  => true
+        :body             => (data && data.to_json)
       })
     end
 
