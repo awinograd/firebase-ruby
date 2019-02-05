@@ -75,7 +75,7 @@ module Firebase
         @expires_at = @credentials.issued_at + 0.95 * @credentials.expires_in
       end
 
-      Firebase::Response.new @request.request(verb, "#{path}.json", {
+      Firebase::Response.new @request.request(verb, path, {
         :body             => (data && data.to_json),
         :query            => (@secret ? { :auth => @secret }.merge(query) : query),
         :follow_redirect  => true
