@@ -7,9 +7,9 @@ require 'uri'
 
 module Firebase
   class Client
-    attr_reader :auth, :request
+    attr_reader :request
 
-    def initialize(base_uri, auth=nil)
+    def initialize(base_uri)
       if base_uri !~ URI::regexp(%w(https))
         raise ArgumentError.new('base_uri must be a valid https uri')
       end
@@ -20,14 +20,9 @@ module Firebase
           'Content-Type' => 'application/json'
         }
       })
-      if auth && valid_json?(auth)
-        @credentials = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
-        @credentials.apply!(@request.default_header)
-        @expires_at = @credentials.issued_at + 0.95 * @credentials.expires_in
-      else
-        # Using deprecated Database Secret
-        @secret = auth
-      end
+      @credentials = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+      @credentials.apply!(@request.default_header)
+      @expires_at = @credentials.issued_at + 0.95 * @credentials.expires_in
     end
 
     # Writes and returns the data
