@@ -21,11 +21,7 @@ module Firebase
         }
       })
       if auth && valid_json?(auth)
-        # Using Admin SDK service account
-        @credentials = Google::Auth::DefaultCredentials.make_creds(
-          json_key_io: StringIO.new(auth),
-          scope: %w(https://www.googleapis.com/auth/firebase.database https://www.googleapis.com/auth/userinfo.email)
-        )
+        @credentials = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
         @credentials.apply!(@request.default_header)
         @expires_at = @credentials.issued_at + 0.95 * @credentials.expires_in
       else
