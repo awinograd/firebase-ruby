@@ -9,7 +9,7 @@ module Firebase
   class Client
     attr_reader :request
 
-    def initialize(base_uri)
+    def initialize(base_uri, auth)
       if base_uri !~ URI::regexp(%w(https))
         raise ArgumentError.new('base_uri must be a valid https uri')
       end
@@ -20,7 +20,7 @@ module Firebase
           'Content-Type' => 'application/json'
         }
       })
-      @credentials = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+      @credentials = auth
       @credentials.apply!(@request.default_header)
       @expires_at = @credentials.issued_at + 0.95 * @credentials.expires_in
     end
